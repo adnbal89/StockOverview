@@ -12,6 +12,7 @@ data class Stock(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val checked: Boolean = false,
     val name: String,
+    val lotSize: Int,
     val buyPrice: Double,
     val currentPrice: Double,
     val created: Long = System.currentTimeMillis()

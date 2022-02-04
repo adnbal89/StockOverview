@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.aceofhigh.stockoverview.data.Stock
 import com.aceofhigh.stockoverview.databinding.ItemStockBinding
+import com.aceofhigh.stockoverview.util.onLongClickListener
 
 
 class StocksAdapter : ListAdapter<Stock, StocksAdapter.StocksViewHolder>(DiffCallback()) {
@@ -33,17 +34,28 @@ class StocksAdapter : ListAdapter<Stock, StocksAdapter.StocksViewHolder>(DiffCal
         fun bind(stock: Stock) {
             binding.apply {
 
-                val profit = calculateProfit(stock.buyPrice, stock.currentPrice)
+                val profit = calculateProfit(stock.buyPrice, stock.currentPrice).round(2) * 100
+                val percentageProfit = "%$profit"
+
                 checkBoxToDelete.isChecked = stock.checked
 
                 textViewName.text = stock.name
-                textViewBuyPrice.text = stock.buyPrice.toString()
-                textViewCurrentPrice.text = stock.currentPrice.toString()
-                textViewProfit.text = profit.toString()
+                textViewBuyPrice.text = stock.buyPrice.round(2).toString()
+                textViewCurrentPrice.text = stock.currentPrice.round(2).toString()
+                textViewProfit.text = percentageProfit.toString()
+                textViewLotSize.text = stock.lotSize.toString()
+                textViewVolumeAmount.text =
+                    calculateVolumeAmount(stock.lotSize, stock.currentPrice).round(2).toString()
                 textViewProfit.setTextColor(getColorForProfitValue(profit))
                 //checkBoxToDelete.isVisible = false
+
+                itemView.onLongClickListener {
+                    println(it)
+                }
             }
         }
+
+
     }
 
     class DiffCallback : DiffUtil.ItemCallback<Stock>() {
@@ -56,10 +68,16 @@ class StocksAdapter : ListAdapter<Stock, StocksAdapter.StocksViewHolder>(DiffCal
             oldItem == newItem
     }
 
+
 }
 
+//TODO : refactor these functions
 private fun calculateProfit(buyPrice: Double, currentPrice: Double): Double {
-    return currentPrice - buyPrice
+    return (currentPrice - buyPrice) / buyPrice
+}
+
+private fun calculateVolumeAmount(lotSize: Int, currentPrice: Double): Double {
+    return lotSize * currentPrice
 }
 
 private fun getColorForProfitValue(profit: Double): Int {
@@ -74,3 +92,5 @@ private fun getColorForProfitValue(profit: Double): Int {
 
     return selectedColor
 }
+
+fun Double.round(decimals: Int = 2): Double = "%.${decimals}f".format(this).toDouble()
