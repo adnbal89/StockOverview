@@ -23,3 +23,5 @@ inline fun View.onLongClickListener(crossinline listener: (String) -> Unit) {
         true
     }
 }
+
+fun Double.round(decimals: Int = 2): Double = "%.${decimals}f".format(this).toDouble()

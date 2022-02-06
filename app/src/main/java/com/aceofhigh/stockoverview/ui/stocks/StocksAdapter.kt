@@ -9,9 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.aceofhigh.stockoverview.data.Stock
 import com.aceofhigh.stockoverview.databinding.ItemStockBinding
 import com.aceofhigh.stockoverview.util.onLongClickListener
+import com.aceofhigh.stockoverview.util.round
 
 
-class StocksAdapter : ListAdapter<Stock, StocksAdapter.StocksViewHolder>(DiffCallback()) {
+class StocksAdapter(private val listener: OnItemCLickListener) :
+    ListAdapter<Stock, StocksAdapter.StocksViewHolder>(DiffCallback()) {
 
     //how to instantiate one of our viewHolder classes.
     //Whenever an item in the list needed, this is how it can get one.
@@ -29,8 +31,29 @@ class StocksAdapter : ListAdapter<Stock, StocksAdapter.StocksViewHolder>(DiffCal
     }
 
     //binding from XML, you can use inside the function.
-    class StocksViewHolder(private val binding: ItemStockBinding) :
+    inner class StocksViewHolder(private val binding: ItemStockBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.apply {
+                root.setOnClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        val stock = getItem(position)
+                        listener.onItemClick(stock)
+                    }
+                }
+
+                checkBoxToDelete.setOnClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        val stock = getItem(position)
+                        listener.onCheckBoxCLick(stock, checkBoxToDelete.isChecked)
+                    }
+                }
+            }
+        }
+
         fun bind(stock: Stock) {
             binding.apply {
 
@@ -56,6 +79,15 @@ class StocksAdapter : ListAdapter<Stock, StocksAdapter.StocksViewHolder>(DiffCal
         }
 
 
+    }
+
+    interface OnLongClickListener {
+
+    }
+
+    interface OnItemCLickListener {
+        fun onItemClick(stock: Stock)
+        fun onCheckBoxCLick(stock: Stock, isChecked: Boolean)
     }
 
     class DiffCallback : DiffUtil.ItemCallback<Stock>() {
@@ -86,11 +118,10 @@ private fun getColorForProfitValue(profit: Double): Int {
     val colorRed: Int = Color.rgb(255, 0, 0)
     val colorBlue: Int = Color.rgb(24, 123, 205)
 
-    if (profit >= 0)
-        selectedColor = colorBlue
-    else selectedColor = colorRed
+    selectedColor = if (profit >= 0)
+        colorBlue
+    else colorRed
 
     return selectedColor
 }
 
-fun Double.round(decimals: Int = 2): Double = "%.${decimals}f".format(this).toDouble()

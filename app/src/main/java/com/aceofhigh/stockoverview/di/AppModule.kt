@@ -32,12 +32,11 @@ object AppModule {
         .addCallback(callback)
         .build()
 
-
     //Hey dagger, we need a taskDao, dagger looks and decides : to create a taskDao, I need a StockDatabase first.
     //StockDatabase creation is defined above,
     //Room makes Dao singleton already, so we do not have to specify @Singleton
     @Provides
-    fun provideTaskDao(db: StockDatabase) = db.stockDao()
+    fun provideStockDao(db: StockDatabase) = db.stockDao()
 
 
     //SupervisorJob tells Coroutines : When a child fails, keep the other child running.

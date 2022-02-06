@@ -1,7 +1,6 @@
 package com.aceofhigh.stockoverview.data
 
 import androidx.room.*
-import com.aceofhigh.stockoverview.ui.stocks.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -31,5 +30,8 @@ interface StockDao {
 
     @Delete
     suspend fun delete(task: Stock)
+
+    @Query("DELETE FROM stock_table WHERE checked = 1")
+    suspend fun deleteCheckedStocks()
 
 }

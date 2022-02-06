@@ -8,6 +8,31 @@
     <fragment
         android:id="@+id/stocksFragment"
         android:name="com.aceofhigh.stockoverview.ui.stocks.StocksFragment"
-        android:label="fragment_tasks"
-        tools:layout="@layout/fragment_stocks" />
+        android:label="Tasks"
+        tools:layout="@layout/fragment_stocks">
+        <action
+            android:id="@+id/action_stocksFragment_to_addEditStockFragment"
+            app:destination="@id/addEditStockFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addEditStockFragment"
+        android:name="com.aceofhigh.stockoverview.ui.addeditstock.AddEditStockFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_add_edit_stock">
+        <argument
+            android:name="stock"
+            android:defaultValue="@null"
+            app:argType="com.aceofhigh.stockoverview.data.Stock"
+            app:nullable="true" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </fragment>
+    <dialog
+        android:id="@+id/deleteAllCheckedDialogFragment"
+        android:name="com.aceofhigh.stockoverview.ui.deleteallchecked.DeleteAllCheckedDialogFragment"
+        android:label="DeleteAllCheckedDialogFragment" />
+    <action
+        android:id="@+id/action_global_deleteAllCheckedDialogFragment"
+        app:destination="@id/deleteAllCheckedDialogFragment" />
 </navigation>
